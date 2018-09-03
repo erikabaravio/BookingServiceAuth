@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import pw.io.booker.exception.BookerServiceException;
 import pw.io.booker.model.TravelPackage;
 import pw.io.booker.repo.TravelPackageRepository;
 
@@ -40,7 +42,7 @@ public class TravelPackageController {
   public List<TravelPackage> updateAll(@RequestBody List<TravelPackage> travelPackages) {
     for (TravelPackage travelPackage : travelPackages) {
       if (!travelPackageRepository.findById(travelPackage.getTravelPackageId()).isPresent()) {
-        throw new RuntimeException("Travel Package should exist first");
+        throw new BookerServiceException("Travel Package should exist first");
       }
     }
     return (List<TravelPackage>) travelPackageRepository.saveAll(travelPackages);
@@ -64,10 +66,10 @@ public class TravelPackageController {
   public TravelPackage updateTravelPackage(@PathVariable("travelPackageId") int travelPackageId,
       @RequestBody TravelPackage travelPackage) {
     if(travelPackageId != travelPackage.getTravelPackageId()) {
-      throw new RuntimeException("Id is not the same with the object id");
+      throw new BookerServiceException("Id is not the same with the object id");
     }
     if (!travelPackageRepository.findById(travelPackage.getTravelPackageId()).isPresent()) {
-      throw new RuntimeException("Travel Package should exist first");
+      throw new BookerServiceException("Travel Package should exist first");
     }
     travelPackage.setTravelPackageId(travelPackageId);
     return travelPackageRepository.save(travelPackage);

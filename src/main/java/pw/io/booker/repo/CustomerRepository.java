@@ -11,4 +11,6 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer> {
 
 	Optional<Customer> findByUsernameAndPassword(String username, String password);
 
+	Optional<Customer> findByUsername(String username);
+
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import pw.io.booker.exception.BookerServiceException;
 import pw.io.booker.model.Service;
 import pw.io.booker.model.TravelPackage;
 import pw.io.booker.repo.ServiceRepository;
@@ -40,7 +42,7 @@ public class TravelPackageServiceController {
       @RequestBody List<Service> services) {
     for(Service service : services) {
       if(serviceRepository.findById(service.getServiceId()).isPresent()) {
-        throw new RuntimeException("Services already exist");
+        throw new BookerServiceException("Services already exist");
       }
     }
     TravelPackage travelPackage = travelPackageRepository.findById(travelPackageId).get();
@@ -53,7 +55,7 @@ public class TravelPackageServiceController {
       @RequestBody List<Service> services) {
     for (Service service: services) {
       if (!serviceRepository.findById(service.getServiceId()).isPresent()) {
-        throw new RuntimeException("Service should exist first");
+        throw new BookerServiceException("Service should exist first");
       }
     }
     return (List<Service>) serviceRepository.saveAll(services);
@@ -77,10 +79,10 @@ public class TravelPackageServiceController {
   public Service updateService(@PathVariable("travelPackageId") int travelPackageId,
       @PathVariable("serviceId") int serviceId, @RequestBody Service service) {
     if(serviceId != service.getServiceId()) {
-      throw new RuntimeException("Id is not the same with the object id");
+      throw new BookerServiceException("Id is not the same with the object id");
     }
     if (!serviceRepository.findById(service.getServiceId()).isPresent()) {
-      throw new RuntimeException("Service should exist first");
+      throw new BookerServiceException("Service should exist first");
     }
     service.setServiceId(serviceId);
     return serviceRepository.save(service);
